@@ -377,7 +377,7 @@ class Ui_MainWindow(object):
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.ToolTipText, brush)
         self.lineEdit_stream_dir_input.setPalette(palette)
-        self.lineEdit_stream_dir_input.setText("rtsp://127.0.0.1:8554/video")
+        self.lineEdit_stream_dir_input.setText("rtsp://127.0.0.1:8554/xxxx")
         self.lineEdit_stream_dir_input.setObjectName("lineEdit_stream_dir_input")
         self.splitter_4 = QtWidgets.QSplitter(self.tab_watcher)
         self.splitter_4.setGeometry(QtCore.QRect(930, 770, 361, 41))
@@ -471,8 +471,6 @@ class Ui_MainWindow(object):
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
         
         self.stream_dir_input = self.lineEdit_stream_dir_input.text()
-        # self.Worker1 = Worker1(self.stream_dir_input)
-        # self.Worker1.ImageUpdate.connect(self.ImageUpdateSlot)
     
         self.pushButton_start_stream.clicked.connect(self.StartFeed)
         self.pushButton_stop_stream.clicked.connect(self.CancelFeed)
@@ -499,16 +497,25 @@ class Ui_MainWindow(object):
     # Take snapshoot and save it
     def take_snapshoot(self):
         self.Worker1.take_snap()
+
         
     # Start stream rtsp
     def StartStream(self):
         if self.comboBox_stream_input.currentText() == "Screen":
-            os.system("gst-rtsp-launch '( videotestsrc ! x265enc ! rtph265pay pt=96 name=pay0 )' > /dev/null 2>&1 &")
+            self.output = os.popen("xwininfo | grep 'Window id'").read()
+            self.win_id = self.output[21:30]
+            os.system("gst-rtsp-launch -e screen '( ximagesrc use-damage=0 startx=0 xid={} ! video/x-raw,framerate=60/1 ! videoflip method=horizontal-flip ! videoconvert ! x265enc ! rtph265pay pt=96 name=pay0 )' > /dev/null 2>&1 &".format(self.win_id))
+            self.lineEdit_your_stream_dir.setText("rtsp://127.0.0.1:8554/screen")
+            self.label_stream_status.setText("Running!")
         elif self.comboBox_stream_input.currentText() == "Camera":
-            os.system("gst-rtsp-launch '( v4l2src device=/dev/video0 ! video/x-raw,width=1280,height=720,framerate=30/1 ! x265enc ! rtph265pay pt=96 name=pay0 )' > /dev/null 2>&1 &")
+            os.system("gst-rtsp-launch -e camera '( v4l2src device=/dev/video0 ! queue leaky=2 ! rtpjpegpay pt=96 name=pay0 )' > /dev/null 2>&1 &")
+            self.lineEdit_your_stream_dir.setText("rtsp://127.0.0.1:8554/camera")
+            self.label_stream_status.setText("Running!")
 
     def StopStream(self):
         os.system("pkill gst-rtsp-launch")
+        self.label_stream_status.setText("Stoped!")
+
 
 
 class Worker1(QThread):

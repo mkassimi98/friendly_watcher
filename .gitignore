@@ -1,0 +1,7 @@
+# Image files
+*.jpg
+
+# Qt project files
+*.pyproject
+*.pyproject.user
+
