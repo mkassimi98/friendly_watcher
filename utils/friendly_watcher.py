@@ -522,7 +522,7 @@ class Ui_MainWindow(object):
 
     def StopStream(self):
         os.system("pkill gst-rtsp-launch")
-        self.label_stream_status.setText("Stoped!")
+        self.label_stream_status.setText("Stopped!")
 
 
 # Worker class for feed image x image to label 
