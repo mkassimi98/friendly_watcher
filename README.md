@@ -51,9 +51,7 @@ Finally, from the Watcher tab, you can take snapshots of the flow you are consum
 
 ### Video example ###
 
-
-![](resources/videos/Friendly_watcher_use.mov)
-
+Puede verse en el directorio "resources/videos/"
 
 ### Contribution guidelines ###
 
