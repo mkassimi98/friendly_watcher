@@ -455,7 +455,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Remote stream"))
         self.label_6.setText(_translate("MainWindow", "Control stream"))
         self.label_4.setText(_translate("MainWindow", "Streaming dir:"))
-        self.pushButton_tk_snp.setText(_translate("MainWindow", "Take Snapshoot"))
+        self.pushButton_tk_snp.setText(_translate("MainWindow", "Take Snapshot"))
         self.pushButton_start_stream.setText(_translate("MainWindow", "Start"))
         self.pushButton_stop_stream.setText(_translate("MainWindow", "Stop"))
         self.tabWidget_main_window.setTabText(self.tabWidget_main_window.indexOf(self.tab_watcher), _translate("MainWindow", "Watcher"))
@@ -474,7 +474,7 @@ class Ui_MainWindow(object):
         # Connections to functions    
         self.pushButton_start_stream.clicked.connect(self.StartFeed)
         self.pushButton_stop_stream.clicked.connect(self.CancelFeed)
-        self.pushButton_tk_snp.clicked.connect(self.take_snapshoot)
+        self.pushButton_tk_snp.clicked.connect(self.take_snapshot)
         self.pushButton_start_send_stream.clicked.connect(self.StartStream)
         self.pushButton_stop_send_stream.clicked.connect(self.StopStream)
             
@@ -493,8 +493,8 @@ class Ui_MainWindow(object):
         self.Worker1.start()
         self.Worker1.ImageUpdate.connect(self.ImageUpdateSlot)
     
-    # Take snapshoot and save it
-    def take_snapshoot(self):
+    # Take snapshot and save it
+    def take_snapshot(self):
         self.Worker1.take_snap()
 
         
