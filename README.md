@@ -51,7 +51,7 @@ Finally, from the Watcher tab, you can take snapshots of the flow you are consum
 
 ### Video example ###
 
-Puede verse en el directorio "resources/videos/"
+Can be found at "resources/videos/"
 
 ### Contribution guidelines ###
 
