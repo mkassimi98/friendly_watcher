@@ -51,15 +51,15 @@ Finally, from the Watcher tab, you can take snapshots of the flow you are consum
 
 ### Video and screenshots examples ###
 
-<<<<<<< HEAD
 You can see the video and the screenshots in the folder "resources". 
 
 By the other hand, you can acces to watch the video on YouTube clicking on the next icon.
-<p align="center">
-        <a href="https://www.youtube.com/watch?v=2YbCavNb07A">
-        <img align="center" src="data/icons/screen-svgrepo-com.svg" width="100" height="100">
-</p>
 
+<p>
+        <p align="center">
+        <a href="https://www.youtube.com/watch?v=2YbCavNb07A">
+        <img src="data/icons/screen-svgrepo-com.svg" width="100" height="100">
+</p>
 
 ## Run on docker
 This intends to automatize the process of building, running, starting and stopping docker images/containers. 
@@ -101,11 +101,9 @@ Finally, you can run the application:
 
     $ docker container rm docker_friendly_watcher && ./run_docker.sh
 
-### Special thanks to:
+### Special thanks to: ###
+
 [Fidel Gonzalez](https://github.com/lotape6) for the support of docker integration.
-=======
-Can be found at "resources/videos/"
->>>>>>> 90d247d6e02a082bfc22d7742faf7167735db73f
 
 ### Contribution guidelines ###
 
