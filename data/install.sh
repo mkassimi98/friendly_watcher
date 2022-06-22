@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dependencies=(git python3 python3-pip python3-venv python3-setuptools libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio)
+dependencies=(git python3 python3-pip python3-venv python3-setuptools pyqt5-dev-tools pyqt5-dev ca-certificates curl gnupg lsb-release python3-opencv)
 
 # Install dependencies
 function dependencies_install() {
@@ -24,7 +24,27 @@ function dependencies_install() {
 function config_install() {
     echo "Installing config file..."
     sudo cp config_friendly_watcher.py /usr/lib/python3/dist-packages/
+    echo "Installing video manager library..."
+    sudo cp ../utils/video_manager/gst_manager.py /usr/lib/python3/dist-packages/
+    sudo cp ../utils/video_manager/opencv_manipulate.py /usr/lib/python3/dist-packages/
 }
+
+# install Docker 
+function docker_install() {
+    echo "Installing Docker."
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+}
+
 
 dependencies_install
 config_install
+
+if ["$1" == "docker"]; then
+    docker_install
+fi

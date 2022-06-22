@@ -49,9 +49,59 @@ On the other hand, to consume the stream, go to the "Watcher" tab, enter in "Str
 
 Finally, from the Watcher tab, you can take snapshots of the flow you are consuming by clicking on the "Take Snapshot" button.
 
-### Video example ###
+### Video and screenshots examples ###
 
-Puede verse en el directorio "resources/videos/"
+You can see the video and the screenshots in the folder "resources". 
+
+By the other hand, you can acces to watch the video on YouTube clicking on the next icon.
+<p align="center">
+        <a href="https://www.youtube.com/watch?v=2YbCavNb07A">
+        <img align="center" src="data/icons/screen-svgrepo-com.svg" width="100" height="100">
+</p>
+
+
+## Run on docker
+This intends to automatize the process of building, running, starting and stopping docker images/containers. 
+
+First, you need to install the docker:
+
+        > $ cd data
+        > $ sudo /bin/bash install.sh docker
+
+### Usage
+
+* The *Dockerfile* starts from a official ubuntu image, installs terminator and configures a little bit the *.bashrc* in order to be coloured and initialize ubuntu. 
+
+
+* The *run_docker.sh* script contain all the required options to run the docker image with the same network as the host, with GUIs enabled, the dbus shared with the host, ...  . The scripts takes 2 optional arguments (container name and image name) in order to easily create new containers/images with the new changes.
+
+
+    ./run_docker.sh  <new_container_name> <new_image_name>      
+                        
+                     # Default img_name = 'docker_friendly_watcher'
+                     # Default continer_name = 'friendly_watcher'
+                    
+
+### **Compiles Dockerfile; if the named container already exists, starts it; else it runs the compiled image**.
+
+### Run fiendly_watcher app on docker
+Is the same as running the application from the command line in the system.
+First, you need to install the application:
+
+        > $ cd friendly_watcher/data
+        > $ sudo /bin/bash install.sh
+
+Finally, you can run the application:
+
+        > $ cd friendly_watcher/utils
+        > $ python3 friendly_watcher.py
+
+**!!!!** If you modify the Dockerfile but you don't remove the container, it will start previous container, not a new one with the new image. To do so:
+
+    $ docker container rm docker_friendly_watcher && ./run_docker.sh
+
+### Special thanks to:
+[Fidel Gonzalez](https://github.com/lotape6) for the support of docker integration.
 
 ### Contribution guidelines ###
 
@@ -62,6 +112,7 @@ Puede verse en el directorio "resources/videos/"
 * [ZeroTier One](https://www.zerotier.com/download)
 * [SRT](https://github.com/Haivision/srt)
 * [Gst-rtsp-launch](https://github.com/sfalexrog/gst-rtsp-launch)
+* [Docker](https://www.docker.com/)
 
 
 ### Who do I talk to? ###

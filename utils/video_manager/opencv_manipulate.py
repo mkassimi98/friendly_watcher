@@ -5,25 +5,6 @@ import cv2
 import time
 import config_friendly_watcher as cfg
 
-# Feed image x image to label
-def ImageUpdateSlot(self, Image):
-    self.FeedLabel_video.setPixmap(QPixmap.fromImage(Image))
-    
-# Stop feed to label
-def CancelFeed(self):
-    self.cv2_manager.stop()
-    
-# Start feed to label
-def StartFeed(self):
-    DIR_TO_THREAD = self.lineEdit_stream_dir_input.text()
-    self.cv2_manager = OpenCV_Manager(DIR_TO_THREAD)
-    self.cv2_manager.start()
-    self.cv2_manager.ImageUpdate.connect(self.ImageUpdateSlot)
-
-# Take snapshot and save it
-def take_snapshot(self):
-    self.cv2_manager.take_snap()
-    
 class OpenCV_Manager(QThread):
     ImageUpdate = pyqtSignal(QImage)
     
