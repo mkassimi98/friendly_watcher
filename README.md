@@ -77,7 +77,7 @@ First, you need to install the docker:
 * The *run_docker.sh* script contain all the required options to run the docker image with the same network as the host, with GUIs enabled, the dbus shared with the host, ...  . The scripts takes 2 optional arguments (container name and image name) in order to easily create new containers/images with the new changes.
 
 
-    ./run_docker.sh  <new_container_name> <new_image_name>      
+        ./run_docker.sh  <new_container_name> <new_image_name>      
                         
                      # Default img_name = 'docker_friendly_watcher'
                      # Default continer_name = 'friendly_watcher'
