@@ -12,10 +12,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import sys
-import cv2
-import time
 import os
 import config_friendly_watcher as cfg
+import opencv_manipulate as opcv
+import gst_manager as gst
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -475,8 +475,8 @@ class Ui_MainWindow(object):
         self.pushButton_start_stream.clicked.connect(self.StartFeed)
         self.pushButton_stop_stream.clicked.connect(self.CancelFeed)
         self.pushButton_tk_snp.clicked.connect(self.take_snapshot)
-        self.pushButton_start_send_stream.clicked.connect(self.StartStream)
-        self.pushButton_stop_send_stream.clicked.connect(self.StopStream)
+        self.pushButton_start_send_stream.clicked.connect(self.Start_streaming)
+        self.pushButton_stop_send_stream.clicked.connect(self.Stop_streaming)
             
     # Feed image x image to label
     def ImageUpdateSlot(self, Image):
@@ -484,81 +484,33 @@ class Ui_MainWindow(object):
         
     # Stop feed to label
     def CancelFeed(self):
-        self.Worker1.stop()
+        self.cv2_manager.stop()
         
     # Start feed to label
     def StartFeed(self):
         DIR_TO_THREAD = self.lineEdit_stream_dir_input.text()
-        self.Worker1 = Worker1(DIR_TO_THREAD)
-        self.Worker1.start()
-        self.Worker1.ImageUpdate.connect(self.ImageUpdateSlot)
+        self.cv2_manager = opcv.OpenCV_Manager(DIR_TO_THREAD)
+        self.cv2_manager.start()
+        self.cv2_manager.ImageUpdate.connect(self.ImageUpdateSlot)
     
     # Take snapshot and save it
     def take_snapshot(self):
-        self.Worker1.take_snap()
+        self.cv2_manager.take_snap()
 
         
     # Start stream rtsp
-    def StartStream(self):
-        if self.comboBox_stream_input.currentText() == "Screen":
-            try:
-                # Select screen to stream
-                self.output = os.popen("xwininfo | grep 'Window id'").read()
-                self.win_id = self.output[21:30]
-                os.system("gst-rtsp-launch -e screen '( ximagesrc use-damage=0 startx=0 xid={} ! video/x-raw,framerate=60/1 ! videoconvert ! x265enc ! rtph265pay pt=96 name=pay0 )' > /dev/null 2>&1 &".format(self.win_id))
-                self.lineEdit_your_stream_dir.setText("rtsp://127.0.0.1:8554/screen")
-                self.label_stream_status.setText("Running!")
-            except Exception as e:
-                print("Error: " + str(e))
-                
-        else:
-            try:
-                # Stream camera feed
-                os.system("gst-rtsp-launch -e camera '( v4l2src device=/dev/video0 ! queue leaky=2 ! rtpjpegpay pt=96 name=pay0 )' > /dev/null 2>&1 &")
-                self.lineEdit_your_stream_dir.setText("rtsp://127.0.0.1:8554/camera")
-                self.label_stream_status.setText("Running!")
-            except Exception as e:
-                print("Error: " + str(e))
+    def Start_streaming(self):
+        self.src = self.comboBox_stream_input.currentText()
+        self.gst_manager = gst.GST_Manager(self.src)
+        self.gst_manager.StartStream()
+        self.label_stream_status.setText("Streaming {}!".format(self.src))
+        self.lineEdit_your_stream_dir.setText("rtsp://127.0.0.1:8554/{}".format(self.src))
 
-    def StopStream(self):
-        os.system("pkill gst-rtsp-launch")
+    def Stop_streaming(self):
+        self.src = self.comboBox_stream_input.currentText()
+        self.gst_manager = gst.GST_Manager(self.src)
+        self.gst_manager.StopStream()
         self.label_stream_status.setText("Stopped!")
-
-
-# Worker class for feed image x image to label 
-class Worker1(QThread):
-    ImageUpdate = pyqtSignal(QImage)
-    
-    def __init__(self, stream_dir_to_thread):
-        super().__init__()
-        self.stream_dir = stream_dir_to_thread
-        
-    def run(self):
-        self.ThreadActive = True
-        RTSP_URL = self.stream_dir
-        Capture = cv2.VideoCapture(RTSP_URL)
-        while self.ThreadActive:
-            try:
-                self.ret, self.frame = Capture.read()
-                if self.ret:
-                    Image = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-                    ConvertToQtFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
-                    Pic = ConvertToQtFormat.scaled(1280, 720, Qt.KeepAspectRatio, transformMode=Qt.SmoothTransformation)
-                    self.ImageUpdate.emit(Pic)
-            except Exception as e:
-                print(e)
-            
-    def stop(self):
-        self.ThreadActive = False
-        self.quit()
-        
-    # TODO: change storage dir to user defined    
-    def take_snap(self):
-        try:
-            tm_taked = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
-            cv2.imwrite(cfg.IMG_PATH+'Frame'+str(tm_taked)+'.jpg', self.frame)
-        except Exception as e:
-            print("Error: " + str(e))
     
 
 if __name__ == "__main__":
@@ -569,7 +521,7 @@ if __name__ == "__main__":
         ui.setupUi(MainWindow)
         MainWindow.show()
         # Stop stream when close window
-        ui.StopStream()
+        ui.Stop_streaming()
         sys.exit(app.exec_())
     except Exception as e:
         print("Error: " + str(e))
