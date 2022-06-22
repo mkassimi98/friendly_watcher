@@ -51,6 +51,7 @@ Finally, from the Watcher tab, you can take snapshots of the flow you are consum
 
 ### Video and screenshots examples ###
 
+<<<<<<< HEAD
 You can see the video and the screenshots in the folder "resources". 
 
 By the other hand, you can acces to watch the video on YouTube clicking on the next icon.
@@ -102,6 +103,9 @@ Finally, you can run the application:
 
 ### Special thanks to:
 [Fidel Gonzalez](https://github.com/lotape6) for the support of docker integration.
+=======
+Can be found at "resources/videos/"
+>>>>>>> 90d247d6e02a082bfc22d7742faf7167735db73f
 
 ### Contribution guidelines ###
 
